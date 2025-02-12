@@ -1,0 +1,24 @@
+{
+  "name": "login_system_jwt-webtoken",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asifmondal07/login_system_jwt-webtoken.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asifmondal07/login_system_jwt-webtoken/issues"
+  },
+  "homepage": "https://github.com/asifmondal07/login_system_jwt-webtoken#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.0"
+  }
+}
