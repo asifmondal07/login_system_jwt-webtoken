@@ -27,6 +27,18 @@ async function createBlog(req,res){
 async function getBlogs(req,res){
     try {
         const blog=await Blog.find().populate("author","name email");
+        if(!blog.length) {
+            return res.status(404).json({ message: "No blogs found" });
+        }
+
+
+        for (let blogs of blog) {
+            blogs.comments=await Comment.find({blogId:blog._id})
+            .populate("createdBy","name email")
+            .sort({createdAt:-1});    
+        }
+        
+
         return res.status(201).json({Blog:blog});
         
         
