@@ -17,11 +17,11 @@ async function handellogin(req,res) {
     const {email,password}=req.body;
 
     const getUser=await user.findOne({email,password});
-
+    const name=getUser.name;
     if(!getUser)return res.status(400).json("Inavalide Email OR Password");
     
     const token=setuser(getUser);
-    return res.status(200).json({ message: "Your login successful", token }); 
+    return res.status(200).json({ name:name,message:"Your login successful",token:token }); 
 }
 async function handelLogout(req, res) {
     res.clearCookie("token");

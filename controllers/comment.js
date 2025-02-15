@@ -3,7 +3,7 @@ const Comment = require("../models/comment");
 
 async function commentCreate(req,res){
    try {
-     const comment=req.body;
+     const {comment}=req.body;
       // Ensure a comment text is provided
       if (!comment) {
         return res.status(400).json({ message: "Comment text is required." });
