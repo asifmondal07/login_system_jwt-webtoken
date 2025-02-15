@@ -1,0 +1,12 @@
+const express=require("express");
+
+const {createBlog ,getBlogs}= require("../controllers/blog.js");
+const requiredAuth = require("../middileware/author");
+
+const router=express.Router();
+
+router.post("/create",requiredAuth ,createBlog);
+router.get("/",getBlogs);
+
+
+module.exports=router;

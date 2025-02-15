@@ -1,4 +1,6 @@
 const jwt=require("jsonwebtoken");
+const User = require("../models/user");
+
 const secret="@Asifmondal7ai@";
 
 
@@ -11,15 +13,21 @@ function setuser(user){
     return token;
 }
 
-function getuser(user){
+async function getuser(token){
     if(!token)return null;
     try {
-        const decodedtoken=jwt.verify(token,secret);
-        return decodedtoken;
+                
+        const decoded=jwt.verify(token,secret);
+        
+
+        const user=await User.findById(decoded._id)
+        
+
+        return user || null;
+        
     } catch (error) {
-        console.log("token verification failed",error.message)
         return null
     }
 }
 
-module.exports={setuser}
+module.exports={setuser,getuser}

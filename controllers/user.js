@@ -13,15 +13,23 @@ async function handelSignUp(req,res){
 }
 
 async function handellogin(req,res) {
+
     const {email,password}=req.body;
+
     const getUser=await user.findOne({email,password});
-    if(!getUser)return res.json("Inavalide Email OR Password");
+
+    if(!getUser)return res.status(400).json("Inavalide Email OR Password");
+    
     const token=setuser(getUser);
-    res.cookie("token",token)
     return res.status(200).json({ message: "Your login successful", token }); 
+}
+async function handelLogout(req, res) {
+    res.clearCookie("token");
+    return res.status(200).json({message:"Logout Succes"})
 }
 
 module.exports={handelSignUp,
-    handellogin
+    handellogin,
+    handelLogout
 
 }

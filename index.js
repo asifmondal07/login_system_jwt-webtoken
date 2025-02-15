@@ -1,6 +1,7 @@
-const express=require("express")
-const connectMongodb=require("./connection/connect")
-const userRouter=require("./routes/user")
+const express=require("express");
+const connectMongodb=require("./connection/connect");
+const userRouter=require("./routes/user");
+const blogRouter=require("./routes/blog");
 const PORT=8000;
 const app=express();
 //database connection
@@ -12,6 +13,7 @@ app.use(express.json());    //handle JSON requests
 
 //Routes
 app.use("/user",userRouter);
+app.use("/blog",blogRouter)
 
 
 app.listen(PORT,()=>console.log("Server Started ",PORT));
