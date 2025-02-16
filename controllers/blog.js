@@ -29,20 +29,20 @@ async function createBlog(req,res){
 
 async function getBlogs(req,res){
     try {
-        let {page, limit,short}=req.params;
+        let {page, limit,sort}=req.query;
 
-        page=parseInt(page)||1
-        limit=parseInt(limit)||5
+        page=parseInt(page) || 1
+        limit=parseInt(limit) || 5
         const skip=(page-1)*limit;
 
-        let shortoption={createdAt :-1};
-        if(short === "oldest"){
-            shortoption={createdAt: 1};
+        let sortoption={createdAt :-1};
+        if(sort === "oldest"){
+            sortoption={createdAt:1};
         }
 
         const blogs=await Blog.find()
         .populate("author","name email")
-        .sort(shortoption)
+        .sort(sortoption)
         .skip(skip).limit(limit);
 
         const totalblogs=await Blog.countDocuments();
