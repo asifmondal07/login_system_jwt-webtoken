@@ -41,6 +41,7 @@ async function getBlogs(req,res){
         }
 
         const blogs=await Blog.find()
+        .populate("author","name email")
         .sort(shortoption)
         .skip(skip).limit(limit);
 
