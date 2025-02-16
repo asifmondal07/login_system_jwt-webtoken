@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true,  // ✅ Fixed typo (was "unquie")
+        unique: true,  
         required: true
     },
     password: {
@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     role: {
-        type: String,  // ✅ Added "type: String"
+        type: String,  
         required: true,
         default: "NORMAL"
     }
