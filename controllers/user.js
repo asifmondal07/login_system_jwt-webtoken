@@ -6,8 +6,10 @@ const bcrypt=require("bcryptjs");
 async function handelSignUp(req,res){
    try {
      const {name,email,password}=req.body;
+     if(!name || !email || !password){
+        return res.status(400).json({message:"All Field Are Requied"}) };
 
-    const salt= await bcrypt.genSalt(10)
+    const salt= await bcrypt.genSalt(10);
     const hashpassword=await  bcrypt.hash(password,salt);
      await user.create({
          name,
