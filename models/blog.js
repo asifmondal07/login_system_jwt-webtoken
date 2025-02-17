@@ -4,6 +4,10 @@ const User = require("./user");
 
 
 const blogSchema=new mongoose.Schema({
+    coverImage:{
+        type:File,
+        require:true
+    },
     title:{
         type:String,
         require:true
