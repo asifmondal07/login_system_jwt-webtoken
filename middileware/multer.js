@@ -1,6 +1,6 @@
 const { error } = require("console");
 const multer=require("multer");
-const path = require("path"); // Correct import
+
 
 const storage=multer.diskStorage({
     destination:function(req,file,cb){
@@ -9,7 +9,6 @@ const storage=multer.diskStorage({
     filename:function(req,file,cb){
 
         if (file && file.originalname) {
-            const ext=path.extname(file.originalname)
             cb(null, Date.now() + "-" + file.originalname);
         } else {
             cb(new Error("No file uploaded"), false);
