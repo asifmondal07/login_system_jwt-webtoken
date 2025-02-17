@@ -13,10 +13,7 @@ const blogSchema=new mongoose.Schema({
         type:String,
         require:true,
     },
-    coverImage:{
-        type:String,
-        require:false
-    },
+    coverImage:[String],
     author:{
         type:mongoose.Schema.Types.ObjectId,
         ref:User,

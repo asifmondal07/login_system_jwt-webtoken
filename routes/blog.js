@@ -7,10 +7,10 @@ const upload=require("../middileware/multer.js")
 
 const router=express.Router();
 
-router.post("/create",requiredAuth,upload.single("coverImage"),createBlog);
+router.post("/create",requiredAuth,upload,createBlog);
 router.get("/",getBlogs);
 router.delete("/:blogId",requiredAuth, deleteBlogs);
-router.patch("/:blogId",requiredAuth,handelEditBlog);
+router.patch("/:blogId",requiredAuth,upload,handelEditBlog);
 router.get("/:blogId",handelGetSingleBlog);
 
 

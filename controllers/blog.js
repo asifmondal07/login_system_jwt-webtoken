@@ -9,8 +9,9 @@ async function createBlog(req,res){
     try {
         const {title,content}=req.body;
 
-        if(!title || !content){return res.status(400).json({message:"Title Or Content required"})} ;
-        const coverImage=req.file? `./image/${req.file.filename}`:null
+        if(!title || !content ){return res.status(400).json({message:"All Field Are required"})} ;
+    
+        const coverImage=req.files.map(file=>`./image/${file.filename}`);
 
         const newBlog=new Blog({
             title: title,
@@ -121,10 +122,10 @@ async function handelEditBlog(req,res){
         if(blog.author.toString !== userId.toString){return res.status(403)
             .json({message: "Unauthorized! You can only delete your own blog."})}
 
-        const coverImage=blog.coverImage;   // Default to the current cover image
+        let coverImage=blog.coverImage || [];   // Default to the current cover image
 
-        if(req.file){                   
-            coverImage=`./image/${req.file.filename}`;// If a new file is uploaded, update coverImage
+        if(req.files &&  req.files.length > 0){                   
+            coverImage=req.files.map(file=>`./image/${file.filename}`);// If a new file is uploaded, update coverImage
         }
 
         // Update the blog
