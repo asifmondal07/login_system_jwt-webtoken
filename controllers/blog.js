@@ -1,7 +1,8 @@
 const { default: mongoose } = require("mongoose");
 const Blog = require("../models/blog");
 const Comment=require("../models/comment");
-const { findById } = require("../models/user");
+
+
 
 async function createBlog(req,res){
     
@@ -9,10 +10,12 @@ async function createBlog(req,res){
         const {title,content}=req.body;
 
         if(!title || !content){return res.status(400).json({message:"Title Or Content required"})} ;
+        const coverImage=req.file? `./image/${req.file.filename}`:null
 
         const newBlog=new Blog({
             title: title,
             content: content,
+            coverImage:coverImage,
             author: req.user._id
         })
      
@@ -96,7 +99,7 @@ async function deleteBlogs(req,res){
      }
      const blogObjectId=new mongoose.Types.ObjectId(blogId);
     
-    await Comment.deleteMany({blogId:blogObjectId})
+    // await Comment.deleteMany({blogId:blogObjectId})
     await Blog.findByIdAndDelete(blogObjectId);
 
     return res.status(200).json({ message: "Blog deleted successfully" });
@@ -110,7 +113,7 @@ async function handelEditBlog(req,res){
     try {
         const {blogId}=req.params;
         const userId=req.user._id;
-        const{title ,content}=req.body;
+        const{title ,content,coverImage}=req.body;
 
         const blog=await Blog.findById(blogId);
         if(!blog){return res.status(404).json({message:"Blog Not Found"})};
@@ -121,8 +124,9 @@ async function handelEditBlog(req,res){
         // Update the blog
         blog.title=title||blog.title; // If no new title, keep old one
         blog.content=content||blog.content; // If no new content, keep old one
+        blog.coverImage=coverImage||blog.coverImage;
         await blog.save() //save the udit blog
-        res.status(200).json({message:"Blog Editing succsesfull ",title:blog.title ,content:blog.content});
+        res.status(200).json({message:"Blog Editing succsesfull ",title:blog.title ,content:blog.content,coverImage:coverImage});
         
 
     } catch (error) {
