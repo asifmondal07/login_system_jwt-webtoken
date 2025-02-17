@@ -8,10 +8,12 @@ async function createBlog(req,res){
     
     try {
         const {title,content}=req.body;
-
-        if(!title || !content ){return res.status(400).json({message:"All Field Are required"})} ;
-    
+        
         const coverImage=req.files.map(file=>`./image/${file.filename}`);
+
+        if(!title || !content || !coverImage){return res.status(400).json({message:"All Field Are required"})} ;
+    
+        
 
         const newBlog=new Blog({
             title: title,
