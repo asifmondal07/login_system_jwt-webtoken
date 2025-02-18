@@ -121,8 +121,8 @@ async function handelEditBlog(req,res){
         const blog=await Blog.findById(blogId);
         if(!blog){return res.status(404).json({message:"Blog Not Found"})};
 
-        if(blog.author.toString !== userId.toString){return res.status(403)
-            .json({message: "Unauthorized! You can only delete your own blog."})}
+        if(blog.author.toString() !== userId.toString()){return res.status(403)
+            .json({message: "Unauthorized! You can only Edit your own blog."})}
 
         let coverImage=blog.coverImage || [];   // Default to the current cover image
 
