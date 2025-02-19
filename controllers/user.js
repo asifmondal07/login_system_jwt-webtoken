@@ -1,6 +1,8 @@
+const { set } = require("mongoose");
 const user=require("../models/user");
 const {setuser} = require("../service/auth");
 const bcrypt=require("bcryptjs");
+const blacklist=require("./util")
 
 
 async function handelSignUp(req,res){
@@ -44,13 +46,18 @@ async function handellogin(req,res) {
         res.status(500).json({ message: "Error logging in",error:error.message });
     }
 }
-async function handelLogout(req, res) {
-    try {
-        res.clearCookie("token");
-        return res.status(200).json({message:"Logout Succes"})
 
+
+
+async function handelLogout(req,res) {
+    try {
+        let token = req.headers.authorization;
+        if (!token) return res.status(400).json({ message: "No token provided" });
+
+        blacklist.add(token); // Store token in blacklist
+        res.status(200).json({ message: "Logout successful" });
     } catch (error) {
-        res.status(500).json({ message: "Error Logout ",error:error.message });
+        res.status(500).json({ message: "Error logging out", error: error.message });
     }
 }
 
@@ -58,4 +65,4 @@ module.exports={handelSignUp,
     handellogin,
     handelLogout
 
-}
+},blacklist
