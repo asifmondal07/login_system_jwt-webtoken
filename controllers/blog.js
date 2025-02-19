@@ -49,7 +49,8 @@ async function getBlogs(req,res){
         const blogs=await Blog.find()
         .populate("author","name email")
         .sort(sortoption)
-        .skip(skip).limit(limit);
+        .skip(skip)
+        .limit(limit);
 
         const totalblogs=await Blog.countDocuments();
 
@@ -134,7 +135,7 @@ async function handelEditBlog(req,res){
         blog.title=title||blog.title; // If no new title, keep old one
         blog.content=content||blog.content; // If no new content, keep old one
         blog.coverImage=coverImage;     //// Update the cover image (if any new file uploaded)
-        await blog.save() //save the udit blog
+        await blog.save() //save the edit blog
 
         res.status(200).json({message:"Blog Editing succsesfull ",title:blog.title ,content:blog.content,coverImage:coverImage});
         
