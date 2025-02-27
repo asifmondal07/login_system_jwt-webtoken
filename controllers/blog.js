@@ -177,7 +177,6 @@ async function handelDeleteCoverImage(req, res) {
         const blogId = req.params.blogId;
         const imageIndex = req.body.imageId;
         const userId=req.user._id
-        console.log(imageIndex)
         // Find the blog by ID
         const blog = await Blog.findById(blogId);
         if (!blog) {
