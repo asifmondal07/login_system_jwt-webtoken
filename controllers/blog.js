@@ -8,8 +8,16 @@ async function createBlog(req,res){
     
     try {
         const {title,content}=req.body;
+        let availableSlots=5
         
-        const coverImage=req.files.map(file=>`./image/${file.filename}`);
+        if (req.files && req.files.length > 0) {
+            if (req.files.length > availableSlots) {
+                return res.status(400).json({ message: `You can upload only ${availableSlots} more images.` });
+            }
+
+             coverImage = req.files.map(file => `./image/${file.filename}`);
+            
+        }
 
         if(!title || !content || !coverImage){return res.status(400).json({message:"All Field Are required"})} ;
     
@@ -28,7 +36,7 @@ async function createBlog(req,res){
 
 
     } catch (error) {
-        res.status(500).json({message:"Error creating blog post", error })
+        res.status(500).json({message:"Error creating blog post", error:error.message })
     }
 
 }
@@ -125,11 +133,18 @@ async function handelEditBlog(req,res){
         if(blog.author.toString() !== userId.toString()){return res.status(403)
             .json({message: "Unauthorized! You can only Edit your own blog."})}
 
-        let coverImage=blog.coverImage || [];   // Default to the current cover image
+            let existingImages = blog.coverImage || []; // Get existing images
+            let maxImages = 5; // Limit
+            let availableSlots = maxImages - existingImages.length; // Remaining slots for new images
+            
+            if (req.files && req.files.length > 0) {
+                if (req.files.length > availableSlots) {
+                    return res.status(400).json({ message: `You can upload only ${availableSlots} more images.` });
+                }
 
-        if(req.files &&  req.files.length > 0){                   
-            coverImage=req.files.map(file=>`./image/${file.filename}`);// If a new file is uploaded, update coverImage
-        }
+                let newImages = req.files.map(file => `./image/${file.filename}`);
+                coverImage = [...existingImages, ...newImages]; // Merge old and new images
+            }
 
         // Update the blog
         blog.title=title||blog.title; // If no new title, keep old one
@@ -157,4 +172,43 @@ async function handelGetSingleBlog(req,res){
     }
 }
 
-module.exports={createBlog,getBlogs,deleteBlogs,handelEditBlog,handelGetSingleBlog};
+async function handelDeleteCoverImage(req, res) {
+    try {
+        const blogId = req.params.blogId;
+        const imageIndex = req.body.imageId;
+        const userId=req.user._id
+        console.log(imageIndex)
+        // Find the blog by ID
+        const blog = await Blog.findById(blogId);
+        if (!blog) {
+            return res.status(404).json({ message: "Blog Not Found" });
+        }
+        if(blog.author.toString() !== userId.toString()){
+            return res.status(403).json({ message: "Unauthorized! You can only delete your own blog." });
+         }
+        // Check if the image exists in the coverImage array
+        let existingImages = blog.coverImage || []
+
+        
+
+        if (!Array.isArray(imageIndex) || imageIndex < 0 || imageIndex >= existingImages.length) {
+            return res.status(400).json({ message: "Image not found in blog" });
+        }
+
+        // Remove images by filtering out those indexes
+        let updatedImages = existingImages.filter((_, index) => !imageIndex.includes(index));
+
+        blog.coverImage = updatedImages;
+        await blog.save();
+
+        res.status(200).json({ 
+            message: "Image deleted successfully", 
+            coverImage: blog.coverImage 
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting image", error: error.message });
+    }
+}
+
+module.exports={createBlog,getBlogs,deleteBlogs,handelEditBlog,handelGetSingleBlog,handelDeleteCoverImage};
