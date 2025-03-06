@@ -66,6 +66,7 @@ async function getBlogs(req,res){
         .json({page:page,
             limit:limit,
             totalblogs:totalblogs,
+            skip:skip,
             totalpages:Math.ceil(totalblogs/limit),
             blogs:blogs})
 
