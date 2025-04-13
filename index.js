@@ -3,6 +3,9 @@ const connectMongodb=require("./connection/connect");
 const userRouter=require("./routes/user");
 const blogRouter=require("./routes/blog");
 const commentRouter=require("./routes/comment")
+const cors=require("cors");
+const path=require("path");
+
 const PORT=8000;
 const app=express();
 //database connection
@@ -11,6 +14,10 @@ connectMongodb("mongodb://127.0.0.1:27017/my_admin");
 //middilware
 app.use(express.urlencoded({extends:false}));
 app.use(express.json());    //handle JSON requests
+app.use(cors({
+    origin: 'http://localhost:5173', //allow requests from this origin 
+})); //handle CORS requests
+app.use('/image', express.static(path.join(__dirname, 'image')));
 
 //Routes
 app.use("/user",userRouter);

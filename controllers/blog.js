@@ -15,7 +15,7 @@ async function createBlog(req,res){
                 return res.status(400).json({ message: `You can upload only ${availableSlots} more images.` });
             }
 
-             coverImage = req.files.map(file => `./image/${file.filename}`);
+             coverImage = req.files.map(file => `/image/${file.filename}`);
             
         }
 
