@@ -13,37 +13,52 @@ async function handelSignUp(req,res){
 
     const salt= await bcrypt.genSalt(10);
     const hashpassword=await  bcrypt.hash(password,salt);
-     await user.create({
+    const newUser= await user.create({
          name,
          email,
          password:hashpassword
      });
-     return res.status(201).json(`hey ${name}, You are succesfully SignUp`)
+        const token=setuser(newUser);
+     
+    // Send response with user name and token
+    return res.status(201).json({
+        name: newUser.name,
+        message: "Signup successful",
+        token: token // Send the token to the frontend
+    });
    } catch (error) {
     res.status(500).json({message:"Error Signup",error:error.message})
    }
 }
 
 async function handellogin(req,res) {
+    console.log("Login request body:", req.body);
 
     try {
-        const {email,password}=req.body;
-    
-        const getUser=await user.findOne({email});
-    
-        const name=getUser.name;
-    
-        if(!getUser)return res.status(400).json("Inavalide Email OR Password");
-    
-        const isMatch= await bcrypt.compare(password,getUser.password)
-        if(!isMatch){return res.status(400).json({error:"Inavalid password"})}
-        
-        const token=setuser(getUser);
-        return res.status(200).json({ name:name,message:"Your login successful",token:token }); 
+        const { email, password } = req.body;
 
+        const getUser = await user.findOne({ email });
+
+        if (!getUser) {
+            return res.status(400).json({ message: "Invalid Email OR Password" });
+        }
+
+        const isMatch = await bcrypt.compare(password, getUser.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid Password" });
+        }
+
+        const name = getUser.name;
+        const token = setuser(getUser);
+        return res.status(200).json({
+            name,
+            message: "Your login was successful",
+            token
+        });
 
     } catch (error) {
-        res.status(500).json({ message: "Error logging in",error:error.message });
+        console.error("Login error:", error); // 👈 Log it in backend console
+        return res.status(500).json({ message: "Error logging in", error: error.message });
     }
 }
 
