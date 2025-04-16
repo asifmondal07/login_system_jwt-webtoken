@@ -126,45 +126,66 @@ async function deleteBlogs(req,res){
     
 
 }
-async function handelEditBlog(req,res){
-    try {
-        const {blogId}=req.params;
-        const userId=req.user._id;
-        const{title ,content}=req.body;
+        async function handelEditBlog(req, res) {
+            try {
+                const { blogId } = req.params;
+                const userId = req.user._id;
+                const { title, content } = req.body;
 
-        const blog=await Blog.findById(blogId);
-        if(!blog){return res.status(404).json({message:"Blog Not Found"})};
-
-        if(blog.author.toString() !== userId.toString()){return res.status(403)
-            .json({message: "Unauthorized! You can only Edit your own blog."})}
-
-            let existingImages = blog.coverImage || []; // Get existing images
-            let maxImages = 5; // Limit
-            let availableSlots = maxImages - existingImages.length; // Remaining slots for new images
-            
-            if (req.files && req.files.length > 0) {
-                if (req.files.length > availableSlots) {
-                    return res.status(400).json({ message: `You can upload only ${availableSlots} more images.` });
+                const blog = await Blog.findById(blogId);
+                if (!blog) {
+                    return res.status(404).json({ message: "Blog Not Found" });
                 }
 
-                let newImages = req.files.map(file => `./image/${file.filename}`);
-                coverImage = [...existingImages, ...newImages]; // Merge old and new images
+                // Check if the user is authorized
+                if (blog.author.toString() !== userId.toString()) {
+                    return res.status(403).json({
+                        message: "Unauthorized! You can only edit your own blog.",
+                    });
+                }
+
+                // Handle images
+                let existingImages = blog.coverImage || [];
+                let maxImages = 5;
+                let coverImage = existingImages; // initialize properly
+                let availableSlots = maxImages - existingImages.length;
+
+                if (req.files && req.files.length > 0) {
+                    if (req.files.length > availableSlots) {
+                        return res.status(400).json({
+                            message: `You can upload only ${availableSlots} more image(s).`,
+                        });
+                    }
+
+                    const newImages = req.files.map(file => `./image/${file.filename}`);
+                    coverImage = [...existingImages, ...newImages];
+                }
+
+                // Update the fields
+                blog.title = title || blog.title;
+                blog.content = content || blog.content;
+                blog.coverImage = coverImage;
+
+                await blog.save();
+
+                return res.status(200).json({
+                    message: "Blog editing successful",
+                    blog: {
+                        id: blog._id,
+                        title: blog.title,
+                        content: blog.content,
+                        coverImage: blog.coverImage,
+                    },
+                });
+
+            } catch (error) {
+                return res.status(500).json({
+                    message: "Error editing blog",
+                    error: error.message,
+                });
             }
+        }
 
-        // Update the blog
-        blog.title=title||blog.title; // If no new title, keep old one
-        blog.content=content||blog.content; // If no new content, keep old one
-        blog.coverImage=coverImage;     //// Update the cover image (if any new file uploaded)
-        await blog.save() //save the edit blog
-
-        res.status(200).json({message:"Blog Editing succsesfull ",title:blog.title ,content:blog.content,coverImage:coverImage});
-        
-
-    } catch (error) {
-        res.status(500).json({message:"Error Editing Blog",error:error.message});
-    }
-    
-}
 
 async function handelGetSingleBlog(req,res){
     try {

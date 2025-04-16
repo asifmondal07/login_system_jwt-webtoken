@@ -11,6 +11,11 @@ async function handelSignUp(req,res){
      if(!name || !email || !password){
         return res.status(400).json({message:"All Field Are Requied"}) };
 
+    const existemail=await user.findOne({email});
+    if(existemail){
+        return res.status(400).json({message:"Email Already Exist"});
+    }
+
     const salt= await bcrypt.genSalt(10);
     const hashpassword=await  bcrypt.hash(password,salt);
     const newUser= await user.create({
@@ -22,13 +27,16 @@ async function handelSignUp(req,res){
      
     // Send response with user name and token
     return res.status(201).json({
+        id: newUser._id,
         name: newUser.name,
         message: "Signup successful",
         token: token // Send the token to the frontend
     });
-   } catch (error) {
-    res.status(500).json({message:"Error Signup",error:error.message})
-   }
+   }catch (error) {
+    console.error("FULL ERROR:", error);
+    setError(error.response?.data?.message || "Signup failed");
+}
+
 }
 
 async function handellogin(req,res) {
