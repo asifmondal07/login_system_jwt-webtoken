@@ -49,9 +49,11 @@ async function handellogin(req,res) {
         }
 
         const name = getUser.name;
+        const id= getUser._id;
         const token = setuser(getUser);
         return res.status(200).json({
             name,
+            id,
             message: "Your login was successful",
             token
         });

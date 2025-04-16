@@ -9,7 +9,7 @@ async function createBlog(req,res){
     try {
         const {title,content}=req.body;
         let availableSlots=5
-        
+        let coverImage=[];
         if (req.files && req.files.length > 0) {
             if (req.files.length > availableSlots) {
                 return res.status(400).json({ message: `You can upload only ${availableSlots} more images.` });
@@ -19,8 +19,12 @@ async function createBlog(req,res){
             
         }
 
-        if(!title || !content || !coverImage){return res.status(400).json({message:"All Field Are required"})} ;
-    
+        if(!title || !content || coverImage.length === 0){return res.status(400).json({message:"All Field Are required"})} ;
+        
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ message: "Unauthorized: No user found" });
+        }
+        
         
 
         const newBlog=new Blog({
@@ -36,7 +40,7 @@ async function createBlog(req,res){
 
 
     } catch (error) {
-        res.status(500).json({message:"Error creating blog post", error:error.message })
+        res.status(500).json({message : "Error creating blog post", error : error.message })
     }
 
 }

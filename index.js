@@ -13,10 +13,16 @@ connectMongodb("mongodb://127.0.0.1:27017/my_admin");
 
 //middilware
 app.use(express.urlencoded({extends:false}));
-app.use(express.json());    //handle JSON requests
+app.use(express.json());    //handle JSON requests 
+
 app.use(cors({
     origin: 'http://localhost:5173', //allow requests from this origin 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,  // Allow cookies to be sent with the request (if needed)
 })); //handle CORS requests
+
+//static file serving
 app.use('/image', express.static(path.join(__dirname, 'image')));
 
 //Routes

@@ -3,16 +3,20 @@ const {getuser}=require("../service/auth");
 const blacklist=require("../controllers/util")
 async function requiredAuth(req,res,next){
 
-    const token = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-    if(!token){return res.status(401).json({message:"Unauthorized! Please log in."})};
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Unauthorized! Please log in." });
+    }
+
+    const token = authHeader.split(" ")[1]; // ✅ Strip "Bearer "
 
     if (blacklist.has(token)) {
         return res.status(401).json({ message: "Token has been blacklisted. Please log in again." });
     }
 
     const user = await getuser(token);
-    
+     
 
 
     if (!user) {
