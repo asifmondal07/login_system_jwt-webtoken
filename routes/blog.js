@@ -12,7 +12,7 @@ router.get("/",getBlogs);
 router.delete("/:blogId",requiredAuth, deleteBlogs);
 router.patch("/:blogId",requiredAuth,upload,handelEditBlog);
 router.get("/:blogId",  handelGetSingleBlog);
-router.delete("/:blogId/image",requiredAuth, handelDeleteCoverImage);
+router.patch("/:blogId/image",requiredAuth, handelDeleteCoverImage);
 
 
 module.exports=router;

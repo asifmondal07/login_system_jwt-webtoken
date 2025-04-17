@@ -17,7 +17,7 @@ app.use(express.json());    //handle JSON requests
 
 app.use(cors({
     origin: 'http://localhost:5173', //allow requests from this origin 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH','OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,  // Allow cookies to be sent with the request (if needed)
 })); //handle CORS requests

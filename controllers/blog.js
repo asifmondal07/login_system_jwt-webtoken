@@ -157,7 +157,7 @@ async function deleteBlogs(req,res){
                         });
                     }
 
-                    const newImages = req.files.map(file => `./image/${file.filename}`);
+                    const newImages = req.files.map(file => `/image/${file.filename}`);
                     coverImage = [...existingImages, ...newImages];
                 }
 
@@ -214,11 +214,14 @@ async function handelDeleteCoverImage(req, res) {
         // Check if the image exists in the coverImage array
         let existingImages = blog.coverImage || []
 
-        
 
-        if (!Array.isArray(imageIndex) || imageIndex < 0 || imageIndex >= existingImages.length) {
-            return res.status(400).json({ message: "Image not found in blog" });
+        let indexesToDelete = Array.isArray(imageIndex) ? imageIndex : [imageIndex];
+
+        // Validate index
+        if (indexesToDelete.some(i => typeof i !== "number" || i < 0 || i >= existingImages.length)) {
+            return res.status(400).json({ message: "Invalid image index" });
         }
+        
 
         // Remove images by filtering out those indexes
         let updatedImages = existingImages.filter((_, index) => !imageIndex.includes(index));
