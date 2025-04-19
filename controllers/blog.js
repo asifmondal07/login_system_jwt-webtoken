@@ -53,14 +53,14 @@ async function getBlogs(req,res){
         limit=parseInt(limit) || 5
         const skip=(page-1)*limit;
 
-        let sortoption={createdAt :-1};
-        if(sort === "oldest"){
-            sortoption={createdAt:1};
-        }
+        // Define sorting option
+        const sortOption = sort === "old"
+        ? { createdAt: 1 }
+        : { createdAt: -1 }; // default to latest
 
         const blogs=await Blog.find()
         .populate("author","name email")
-        .sort(sortoption)
+        .sort(sortOption)
         .skip(skip)
         .limit(limit);
 

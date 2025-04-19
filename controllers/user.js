@@ -48,7 +48,7 @@ async function handellogin(req,res) {
         const getUser = await user.findOne({ email });
 
         if (!getUser) {
-            return res.status(400).json({ message: "Invalid Email OR Password" });
+            return res.status(400).json({ message: "Invalid Email" });
         }
 
         const isMatch = await bcrypt.compare(password, getUser.password);
