@@ -54,7 +54,7 @@ async function getBlogs(req,res){
         const skip=(page-1)*limit;
 
         // Define sorting option
-        const sortOption = sort === "old"
+        const sortOption = sort === "Oldest"
         ? { createdAt: 1 }
         : { createdAt: -1 }; // default to latest
 
