@@ -12,7 +12,7 @@ async function createBlog(req,res){
         let coverImage=[];
         if (req.files && req.files.length > 0) {
             if (req.files.length > availableSlots) {
-                return res.status(400).json({ message: `You can upload only ${availableSlots} more images.` });
+                return res.status(400).json({ message: `You can upload only ${availableSlots} images.` });
             }
 
              coverImage = req.files.map(file => `/image/${file.filename}`);
@@ -153,7 +153,7 @@ async function deleteBlogs(req,res){
                 if (req.files && req.files.length > 0) {
                     if (req.files.length > availableSlots) {
                         return res.status(400).json({
-                            message: `You can upload only ${availableSlots} more image(s).`,
+                            message: `You can upload only ${availableSlots} image(s).`,
                         });
                     }
 
