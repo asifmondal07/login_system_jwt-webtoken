@@ -10,9 +10,9 @@ const router=express.Router();
 router.post("/create",requiredAuth,upload,createBlog);
 router.get("/",getBlogs);
 router.delete("/:blogId",requiredAuth, deleteBlogs);
-router.patch("/:blogId",requiredAuth,upload,handelEditBlog);
+router.put("/:blogId",requiredAuth,upload,handelEditBlog);
 router.get("/:blogId",  handelGetSingleBlog);
-router.patch("/:blogId/image",requiredAuth, handelDeleteCoverImage);
+router.put("/:blogId/image",requiredAuth, handelDeleteCoverImage);
 
 
 module.exports=router;
