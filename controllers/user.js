@@ -67,7 +67,7 @@ async function handellogin(req,res) {
         });
 
     } catch (error) {
-        console.error("Login error:", error); // 👈 Log it in backend console
+        console.error("Login error:", error); 
         return res.status(500).json({ message: "Error logging in", error: error.message });
     }
 }
