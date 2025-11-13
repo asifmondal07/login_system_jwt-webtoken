@@ -6,7 +6,7 @@ const commentRouter=require("./routes/comment")
 const cors=require("cors");
 const path=require("path");
 
-const PORT=8000;
+const PORT=8005;
 const app=express();
 //database connection
 connectMongodb("mongodb://127.0.0.1:27017/my_admin");
